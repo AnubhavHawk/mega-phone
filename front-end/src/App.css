@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+:root {
+    --blue: ##203886;
+    --white: #ffffff;
+    /* --t-green: #58bf93; */
+    --t-green: #1bc972;
+    --t-dark-brown: #f47920;
+    --t-light-brown: #fdb834;
+    --t-blue: #203886;
+}
+::-moz-selection { /* Code for Firefox */
+    color: white;
+    background: #2fff63;
+}
+
+::selection {
+    color: white;
+    background: #2fff63;
+}
+.form-control:focus {
+    border-color: #1bbc9b;
+    box-shadow: 0 0 0 0.2rem #1bbc9b66;
+}
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+.bg-green {
+    background-color: var(--t-green);
+}
+.text-green {
+    color: var(--t-green);
+}
+.bg-blue {
+    background-color: var(--t-blue);
+}
+.text-blue {
+    color: var(--t-blue);
+}
+#nav-img{
+	transition: all 0.5s ease-in-out!important;
+}
+.navbar{
+    /* box-shadow:1px 1px 10px 4px gainsboro!important; */
+    border-bottom: 2px solid var(--t-green);
+}
+.nav-link {
+    font-weight: bold!important;
+}
+.nav-search {
+    background: #58bf93;
+    border: none;
+    box-shadow: inset 0px 0px 20px 6px #479b77;
+    color: white!important;
+    transition: all 0.3s ease;
+}
+.nav-search:focus {
+    border: 2px solid white;
+    background: var(--t-green)!important;
+    box-shadow: none;
+    /* z-index: 2;
+    position: relative;
+    width: 500px;
+    max-width: 100%; */
+}
+.nav-search::placeholder, .nav-search.nav-search::placeholder, .nav-search:-moz-placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: red!important;
+}
+.my-btn-hover>a:hover {
+  text-decoration: none;
+}
+.my-btn-hover:hover {
+  filter: brightness(1.10)!important;
+}
+.dropdown-item:hover {
+  cursor: pointer;
+}
