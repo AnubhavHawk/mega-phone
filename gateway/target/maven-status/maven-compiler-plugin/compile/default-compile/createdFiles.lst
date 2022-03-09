@@ -1,0 +1,4 @@
+com\bbps\gateway\rest\util\JwtUtil.class
+com\bbps\gateway\rest\filters\JwtAuthenticationFilter.class
+com\bbps\gateway\GatewayApplication.class
+com\bbps\gateway\rest\filters\JwtAuthenticationFilter$Config.class

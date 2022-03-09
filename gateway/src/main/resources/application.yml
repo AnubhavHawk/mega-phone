@@ -1,0 +1,26 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: token-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/get-token, /get-token
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: url-shortner
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/**
+          filters:
+            - JwtAuthenticationFilter
+            - RewritePath=/api/create, /create
+            - RewritePath=/api/get-token, /get-token
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
