@@ -68,6 +68,16 @@ function ApiConfiguration(props) {
 
     function submitConfigurations() {
         console.log(formData);
+
+        let createUrl = "http://localhost:8082/save-biller-fields";
+
+        fetch(createUrl, { 
+            method: 'post', 
+            headers: new Headers({ 
+                'Content-Type': 'application/json'
+            }), 
+            body: JSON.stringify(formData)
+        }).then(res => res.text()).then(res => console.log(res));
     }
 
     if(props.user === null) {
@@ -126,7 +136,7 @@ function ApiConfiguration(props) {
                         (apiData.length > 0 && contactField !== null && timeField !== null) ? (
                             <div className="mt-4 bg-white rounded p-2 shadow-sm">
                                 <small>Specified Fields are: </small><span className="badge badge-success bg-green">{apiFields[contactField]} <i className="fa fa-mobile-alt ml-1"></i></span> <span className="badge badge-success bg-green">{apiFields[timeField]} <i className="fa fa-clock ml-1"></i></span>
-                                <div className="mt-2"><b className="text-green">Step 3: </b> Define frequency for sending the ClickPay Links i.e., how many hours before due date the links should be sent to the customer on <kbd>{apiFields[contactField]}</kbd></div>
+                                <div className="mt-2"><b className="text-green">Step 3: </b> Define bill remaining time i.e., how many hours before due date the links should be sent to the customer on <kbd>{apiFields[contactField]}</kbd></div>
                                 <hr/>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <i className="fa fa-bell mr-2"></i>
