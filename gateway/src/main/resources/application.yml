@@ -7,10 +7,20 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: admin-configuration
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - JwtAuthenticationFilter
+            - RewritePath=/api/admin/get-configuration, /admin/get-configuration
+            - RewritePath=/api/admin/change-configuration, /admin/change-configuration
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
         - id: token-service
           uri: http://localhost:8081
           predicates:
-            - Path=/api/**
+            - Path=/api/get-**
           filters:
             - RewritePath=/api/get-token, /get-token
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
@@ -21,6 +31,7 @@ spring:
             - Path=/api/**
           filters:
             - JwtAuthenticationFilter
+            - RewritePath=/api/create/bulk, /bulk-create
             - RewritePath=/api/create, /create
-            - RewritePath=/api/get-token, /get-token
+            - RewritePath=/api/expire/(?<segment>.*), /expire/$\{segment}
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin

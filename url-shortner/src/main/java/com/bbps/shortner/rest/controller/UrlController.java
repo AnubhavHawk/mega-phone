@@ -85,8 +85,10 @@ public class UrlController {
         try {
             String originalUrl = null; // get this from JPA
             LongUrl longUrl = urlService.getLongUrlfromShortUrl(code);
-            if(longUrl != null) {
+            if(longUrl != null && longUrl.getValidTill().isAfter(LocalDateTime.now())) {
                 originalUrl = longUrl.getOriginalUrl();
+            }else {
+                return ResponseEntity.badRequest().body("URL Not Available or expired!");
             }
             response.sendRedirect(originalUrl);
         }

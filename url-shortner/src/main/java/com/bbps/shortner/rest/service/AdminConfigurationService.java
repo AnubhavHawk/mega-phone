@@ -11,7 +11,7 @@ public class AdminConfigurationService {
     private AdminRepository adminRepository;
 
     public AdminConfiguration getAdminConfiguration() {
-        return adminRepository.getOne(1L);
+        return adminRepository.findAll().get(0);
     }
     public AdminConfiguration update(AdminConfiguration adminConfiguration) {
         return adminRepository.save(adminConfiguration);

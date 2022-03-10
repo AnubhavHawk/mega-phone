@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
 
     @Override
     public GatewayFilter apply(JwtAuthenticationFilter.Config config) {
+        System.out.println("------------------");
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             // Return unauthorised if authorization header is not present.
