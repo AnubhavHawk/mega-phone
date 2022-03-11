@@ -103,6 +103,8 @@ public final class DateUtil {
      * @see SimpleDateFormat
      */
     public static Date parse(String dateString, String dateFormat) throws ParseException {
+        dateString = dateString.replaceAll("T", " ");
+        dateFormat = dateFormat.replaceAll("T", " ");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
         return simpleDateFormat.parse(dateString);
