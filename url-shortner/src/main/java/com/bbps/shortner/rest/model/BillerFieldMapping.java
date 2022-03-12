@@ -13,6 +13,9 @@ public class BillerFieldMapping {
     private int id;
     private String billerId;
     private String billerEndpointUrl;
+    private String billerMessage;
+    private int timeLeftForTrigger; // in Hours
+    private String baseUrlLong;
     private String field1 = null;
     private String field2 = null;
     private String field3 = null;
@@ -78,6 +81,30 @@ public class BillerFieldMapping {
 
     public void setBillerEndpointUrl(String billerEndpointUrl) {
         this.billerEndpointUrl = billerEndpointUrl;
+    }
+
+    public String getBillerMessage() {
+        return billerMessage;
+    }
+
+    public void setBillerMessage(String billerMessage) {
+        this.billerMessage = billerMessage;
+    }
+
+    public int getTimeLeftForTrigger() {
+        return timeLeftForTrigger;
+    }
+
+    public void setTimeLeftForTrigger(int timeLeftForTrigger) {
+        this.timeLeftForTrigger = timeLeftForTrigger;
+    }
+
+    public String getBaseUrlLong() {
+        return baseUrlLong;
+    }
+
+    public void setBaseUrlLong(String baseUrlLong) {
+        this.baseUrlLong = baseUrlLong;
     }
 
     public void setBillerId(String billerId) {

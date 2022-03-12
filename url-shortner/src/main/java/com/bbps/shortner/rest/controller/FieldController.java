@@ -6,6 +6,7 @@ import com.bbps.shortner.rest.model.TimeBasedField;
 import com.bbps.shortner.rest.repository.BillerFieldMappingRepository;
 import com.bbps.shortner.rest.repository.ContactBasedFieldRepository;
 import com.bbps.shortner.rest.repository.TimeBasedFIeldRepository;
+import com.bbps.shortner.rest.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,6 +42,10 @@ public class FieldController {
         if(billerId == null || billerId.trim() == "") {
             return ResponseEntity.badRequest().body("Biller Id can't be empty");
         }
+        String billerMsg = (String) (requestBody.containsKey("blrmessage") ? requestBody.get("blrmessage") : null);
+        if(billerMsg == null || billerMsg.trim() == "") {
+            return ResponseEntity.badRequest().body("billerMsg can't be empty");
+        }
         String endpointUrl = (String) (requestBody.containsKey("endpointUrl") ? requestBody.get("endpointUrl") : null);
         if(endpointUrl == null || endpointUrl.trim() == "") {
             return ResponseEntity.badRequest().body("endpointUrl can't be empty");
@@ -53,9 +58,17 @@ public class FieldController {
         if(timeFieldIndex <= -1) {
             return ResponseEntity.badRequest().body("timeField can't be empty");
         }
+        int timeLeftForTrigger = (int) (requestBody.containsKey("timeRemainingInHours") ? requestBody.get("timeRemainingInHours") : null);
+        if(timeLeftForTrigger <= -1) {
+            return ResponseEntity.badRequest().body("TimeRemainingInHours can't be empty");
+        }
         int contactFieldIndex = (int) (requestBody.containsKey("contactField") ? requestBody.get("contactField") : null);
         if(contactFieldIndex <= -1) {
             return ResponseEntity.badRequest().body("contactField can't be empty");
+        }
+        String baseUrlLong = (String) (requestBody.containsKey("paymentEndpoint") ? requestBody.get("paymentEndpoint") : null);
+        if(baseUrlLong == null || endpointUrl.trim() == "") {
+            return ResponseEntity.badRequest().body("paymentEndpoint can't be empty");
         }
 
 //        System.out.println(fieldList);
@@ -72,6 +85,9 @@ public class FieldController {
 
         billerFieldMapping.setBillerId(billerId);
         billerFieldMapping.setBillerEndpointUrl(endpointUrl);
+        billerFieldMapping.setBillerMessage(billerMsg);
+        billerFieldMapping.setTimeLeftForTrigger(timeLeftForTrigger);
+        billerFieldMapping.setBaseUrlLong(baseUrlLong);
 
 
         // Store all fields
@@ -141,6 +157,7 @@ public class FieldController {
         timeBasedField.setBillerId(billerId);
         timeBasedField.setTimeFormat(timeFormat);
         timeBasedField.setTimeFieldIndex(timeFieldIndex);
+
         timeBasedFIeldRepository.save(timeBasedField);
 
         // Store contact based field
@@ -152,6 +169,21 @@ public class FieldController {
         contactBasedField.setContactFieldIndex(contactFieldIndex);
         contactBasedFieldRepository.save(contactBasedField);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("{\"result\": true}");
+    }
+
+    @PostMapping("/validate-date")
+    public ResponseEntity<?> validateDate(@RequestBody LinkedHashMap<String, String> requestBody) {
+        System.out.println("RequestBody: " + requestBody);
+        try {
+            String timeString = requestBody.get("timeString");
+            String timeFormat = requestBody.get("timeFormat");
+            System.out.println(timeString + " -> " + timeFormat);
+            DateUtil.parse(timeString, timeFormat);
+        }
+        catch (Exception e) {
+            return ResponseEntity.ok().body("{\"result\": false}");
+        }
+        return ResponseEntity.ok().body("{\"result\": true}");
     }
 }

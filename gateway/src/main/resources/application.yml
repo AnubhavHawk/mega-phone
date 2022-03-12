@@ -25,6 +25,16 @@ spring:
             - RewritePath=/api/get-token, /get-token
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
+        - id: save-biller-configuration
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/save-**
+          filters:
+            - JwtAuthenticationFilter
+            - RewritePath=/api/save-biller-configurations, /save-biller-fields
+            - RewritePath=/api/save-date-validate, /validate-date
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
         - id: url-shortner
           uri: http://localhost:8082
           predicates:
