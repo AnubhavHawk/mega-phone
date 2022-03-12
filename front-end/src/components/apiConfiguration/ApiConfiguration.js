@@ -13,7 +13,10 @@ function ApiConfiguration(props) {
     const [contactField, setContactField] = useState(null);
     const [timeFormat, setTimeFormat] = useState("YYYY-MM-DD hh:mm:ss");
     const [formData, setFormData] = useState({});
-    const [blrmessage, setBlrMessage] = useState("Your bill is going to expire soon, click the link below $$##$$ to pay now.\n-Bharat Bill Pay")
+    const [blrmessage, setBlrMessage] = useState("Your bill is going to expire soon, click the link below @@##@@ to pay now.\n-Bharat Bill Pay")
+    const [timeRemainingInHours, setTimeRemainingInHours] = useState(48);
+    const [timeString, setTimeString] = useState("");
+    const [paymentEndpoint, setPaymentEndpoint] = useState("");
     function getApi() {
         console.log(endpointUrl)
         fetch(endpointUrl)
@@ -50,9 +53,15 @@ function ApiConfiguration(props) {
             endpointUrl,
             contactField,
             blrmessage,
-            billerId: props.user.username
+            billerId: props.user.username,
+            timeRemainingInHours: parseInt(timeRemainingInHours),
+            paymentEndpoint
         })
-    }, [apiData, timeField, timeFormat, contactField, blrmessage])
+
+        // Store the timeString
+        setTimeString(apiData.length > 0 ? (apiData[0][apiFields[timeField]]) : '')
+        
+    }, [apiData, timeField, timeFormat, contactField, blrmessage, timeRemainingInHours, paymentEndpoint])
 
 
     function deleteField(key) {
@@ -61,23 +70,50 @@ function ApiConfiguration(props) {
             setApiFields(apiFields.filter((field, i) => i !== key))
         }
     }
-    function validateTimeFormat(timeFormat) {
-        alert(moment(apiData[0][apiFields[timeField]], timeFormat))
+    function validateTimeFormat() {
+        let dateValidationUrl = "http://localhost:8080/api/save-date-validate";
+        fetch(dateValidationUrl, { 
+            method: 'post', 
+            headers: new Headers({ 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+JSON.parse(localStorage.getItem('user')).token
+            }), 
+            body: JSON.stringify({timeString, timeFormat})
+        }).then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if(res.result) {
+                alert("Date Format is OK !!");
+            }
+            else {
+                alert("Enter correct date format");
+            }
+        });
 
     }
 
     function submitConfigurations() {
         console.log(formData);
+        let saveConfigurationUrl = "http://localhost:8080/api/save-biller-configurations";
 
-        let createUrl = "http://localhost:8082/save-biller-fields";
-
-        fetch(createUrl, { 
+        fetch(saveConfigurationUrl, { 
             method: 'post', 
             headers: new Headers({ 
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+JSON.parse(localStorage.getItem('user')).token
             }), 
             body: JSON.stringify(formData)
-        }).then(res => res.text()).then(res => console.log(res));
+        }).then(res => {
+            console.log("Status: " + res.status + " Ok: " + res.ok)
+            return res.json()
+        })
+        .then(res => {
+            if(res.result) {
+                alert("Configurations Saved successfully!!");
+            }
+            // console.log("Result: " + res.result)
+        });
     }
 
     if(props.user === null) {
@@ -140,7 +176,7 @@ function ApiConfiguration(props) {
                                 <hr/>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <i className="fa fa-bell mr-2"></i>
-                                    <input type="number" step="10" className="form-control d-inline" />
+                                    <input type="number" step="10" className="form-control d-inline" value={timeRemainingInHours} onChange={e => setTimeRemainingInHours(e.target.value)} />
                                 </div>
                             </div>
                         ) : ''
@@ -150,11 +186,15 @@ function ApiConfiguration(props) {
                         (apiData.length > 0 && contactField !== null && timeField !== null) ? (
                             <div className="mt-4 bg-white rounded p-2 shadow-sm">
                                 <small>Specified Fields are: </small><span className="badge badge-success bg-green">{apiFields[contactField]} <i className="fa fa-mobile-alt ml-1"></i></span> <span className="badge badge-success bg-green">{apiFields[timeField]} <i className="fa fa-clock ml-1"></i></span>
-                                <div className="mt-2"><b className="text-green">Step 4: </b> Specify what message the customers should receive. User <b>$$##$$</b> as placeholder for the ClickPay link in the message i.e., $$##$$ will be replaced by the original ClickPay link in SMS</div>
+                                <div className="mt-2"><b className="text-green">Step 4: </b> Specify what message the customers should receive. User <b>@@##@@</b> as placeholder for the ClickPay link in the message i.e., @@##@@ will be replaced by the original ClickPay link in SMS</div>
                                 <hr/>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <i className="fa fa-comment-alt mr-2"></i>
                                     <textarea className="form-control" value={blrmessage} onChange={e => setBlrMessage(e.target.value)}></textarea>
+                                </div>
+                                <div className="mt-5">
+                                    <label><i className="fa fa-link mr-2"></i> <b className="text-green">Step 5: </b> Bill Endpoint. Where the customers should be routed for paying bills</label>
+                                    <input className="form-control" value={paymentEndpoint} onChange={e => setPaymentEndpoint(e.target.value)} placeholder="http://biller.com/pay"/>
                                 </div>
                             </div>
                         ) : ''
