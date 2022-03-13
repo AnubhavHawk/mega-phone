@@ -186,7 +186,7 @@ function ApiConfiguration(props) {
                         (apiData.length > 0 && contactField !== null && timeField !== null) ? (
                             <div className="mt-4 bg-white rounded p-2 shadow-sm">
                                 <small>Specified Fields are: </small><span className="badge badge-success bg-green">{apiFields[contactField]} <i className="fa fa-mobile-alt ml-1"></i></span> <span className="badge badge-success bg-green">{apiFields[timeField]} <i className="fa fa-clock ml-1"></i></span>
-                                <div className="mt-2"><b className="text-green">Step 4: </b> Specify what message the customers should receive. User <b>@@##@@</b> as placeholder for the ClickPay link in the message i.e., @@##@@ will be replaced by the original ClickPay link in SMS</div>
+                                <div className="mt-2"><b className="text-green">Step 4: </b> Specify what message the customers should receive. Use <b>@@##@@</b> as placeholder for the ClickPay link in the message i.e., @@##@@ will be replaced by the original ClickPay link in SMS</div>
                                 <hr/>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <i className="fa fa-comment-alt mr-2"></i>
